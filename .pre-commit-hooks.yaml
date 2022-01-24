@@ -1,0 +1,6 @@
+- id: go-fiximports
+  name: fiximports
+  description: formats and adjusts imports for go source files
+  entry: fiximports
+  language: golang
+  types: [file, go]
