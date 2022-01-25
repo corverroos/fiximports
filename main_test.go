@@ -33,15 +33,18 @@ func TestFix(t *testing.T) {
 					}
 					return nil
 				}
+
 				expect, err := os.ReadFile(actualFile)
 				if err != nil {
 					t.Fatal(err)
 				}
+
 				if !bytes.Equal(expect, actual) {
 					t.Fatalf("mismatching output, test=%s\n\nactual:\n%s\n\nexpect:\n%s", test.name, actual, expect)
 				}
 				return nil
 			}
+
 			err := run(quiet, write, []string{path.Join("testdata", test.name)})
 			if err != nil {
 				t.Fatal(err)
