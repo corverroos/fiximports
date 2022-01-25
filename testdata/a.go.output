@@ -1,0 +1,14 @@
+package testdata
+
+import (
+	_ "fmt"
+	"testing"
+
+	bls "github.com/drand/bls12-381"
+	"github.com/sebdah/goldie/v2"
+)
+
+func TestFoo(t *testing.T) {
+	goldie.New(t)
+	bls.NewGroupG1()
+}

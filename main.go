@@ -32,14 +32,18 @@ func main() {
 		fmt.Printf(msg+"\n", args...)
 	}
 
-	err := run(logf, flag.Args())
+	write := func(file string, src []byte) error {
+		return os.WriteFile(file, src, 0644)
+	}
+
+	err := run(logf, write, flag.Args())
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		os.Exit(1)
 	}
 }
 
-func run(logf func(string, ...interface{}), files []string) error {
+func run(logf func(string, ...interface{}), write func(string, []byte) error, files []string) error {
 	if len(files) == 0 {
 		return errors.New("no files specified")
 	}
@@ -79,7 +83,7 @@ func run(logf func(string, ...interface{}), files []string) error {
 
 			logf("Fixed imports: %s", file)
 
-			return os.WriteFile(file, out, 0644)
+			return write(file, out)
 		})
 	}
 
