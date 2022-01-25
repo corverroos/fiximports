@@ -16,5 +16,5 @@ Usage as part of [pre-commit](https://pre-commit.com/) githook framework is supp
 ```
 - repo: https://github.com/corverroos/fiximports
   hooks:
-  - id: fiximports
+  - id: go-fiximports
 ```
