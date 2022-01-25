@@ -67,9 +67,13 @@ func run(logf func(string, ...interface{}), write func(string, []byte) error, fi
 				return err
 			}
 
-			src, err = compactImports(src)
+			var doNotEdit bool
+			src, doNotEdit, err = prepSource(src)
 			if err != nil {
 				return err
+			} else if doNotEdit {
+				logf("Skipping generated file: %s", file)
+				return nil
 			}
 
 			out, err := imports.Process(file, src, nil)
@@ -111,11 +115,16 @@ func ensureLocalPrefix(logf func(string, ...interface{}), file string) error {
 	return nil
 }
 
-func compactImports(src []byte) ([]byte, error) {
+// prepSource returns the source code with removed new lines in the import
+// section. This is because golang.org/x/tools/imports doesn't support merging
+// groups of imports. It also returns a boolean indicating if the file is allowed
+// to be edited, by detecting the generated code marker "DO NOT EDIT".
+func prepSource(src []byte) ([]byte, bool, error) {
 	scanner := bufio.NewScanner(bytes.NewReader(src))
 
 	var (
 		inImports bool
+		doNotEdit bool
 		res       []string
 	)
 
@@ -131,8 +140,12 @@ func compactImports(src []byte) ([]byte, error) {
 			inImports = false
 		}
 
+		if strings.Contains(line, "DO NOT EDIT") {
+			doNotEdit = true
+		}
+
 		res = append(res, line)
 	}
 
-	return []byte(strings.Join(res, "\n")), nil
+	return []byte(strings.Join(res, "\n")), doNotEdit, scanner.Err()
 }

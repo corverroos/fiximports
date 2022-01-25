@@ -17,6 +17,8 @@ func TestFix(t *testing.T) {
 	}{
 		{
 			name: "a.go",
+		}, {
+			name: "b.go",
 		},
 	}
 
